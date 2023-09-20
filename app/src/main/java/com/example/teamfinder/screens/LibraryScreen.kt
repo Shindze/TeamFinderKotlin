@@ -30,6 +30,7 @@ import androidx.compose.material3.NavigationBarItem
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBarDefaults
+import androidx.compose.material3.surfaceColorAtElevation
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -39,6 +40,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.toArgb
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextOverflow
@@ -75,24 +77,14 @@ fun LibraryScreen() {
         )
     )
 
-    val systemUiController = rememberSystemUiController()
-    if (isSystemInDarkTheme()) {
-        systemUiController.setSystemBarsColor(
-            color = MaterialTheme.colorScheme.surface
-        )
-    } else {
-        systemUiController.setSystemBarsColor(
-            color = Color.Red
-        )
-    }
-
     Scaffold(
         Modifier
             .fillMaxSize(),
         containerColor = MaterialTheme.colorScheme.background,
         topBar = {
             CenterAlignedTopAppBar(
-                colors = TopAppBarDefaults.centerAlignedTopAppBarColors(containerColor = MaterialTheme.colorScheme.surface),
+                colors = TopAppBarDefaults.centerAlignedTopAppBarColors(
+                    containerColor = MaterialTheme.colorScheme.surfaceColorAtElevation(3.dp)),
                 navigationIcon = {
                     IconButton(onClick = {}) {
                         Icon(
@@ -118,7 +110,7 @@ fun LibraryScreen() {
         },
         bottomBar = {
             NavigationBar(
-                containerColor = MaterialTheme.colorScheme.surface
+                containerColor = MaterialTheme.colorScheme.surfaceColorAtElevation(3.dp)
             ) {
                 items.forEachIndexed { index, item ->
                     NavigationBarItem(
