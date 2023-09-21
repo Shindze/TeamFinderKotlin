@@ -5,7 +5,6 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Home
 import androidx.compose.material.icons.filled.Notifications
 import androidx.compose.material.icons.filled.Settings
-import androidx.compose.material3.Divider
 import androidx.compose.material3.DrawerValue
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
@@ -26,7 +25,8 @@ import kotlinx.coroutines.launch
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun Drawer() {
+fun Drawer(
+    navigation: () -> Unit) {
 
     val items = listOf(
 
@@ -70,7 +70,7 @@ fun Drawer() {
                         onClick = {
                             scope.launch {
                                 selectedItem.value = item
-                                drawerState.close()
+                                if (selectedItem.value.title == "Настройки") navigation()
                             }
                         },
                         Modifier.padding(horizontal = 16.dp, vertical = 8.dp),
@@ -82,7 +82,7 @@ fun Drawer() {
             }
         },
         content = {
-            LibraryScreen()
+            LibraryScreen(scope, drawerState)
         },
     )
 }

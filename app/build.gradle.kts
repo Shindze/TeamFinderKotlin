@@ -5,7 +5,7 @@ plugins {
 
 android {
     namespace = "com.example.teamfinder"
-    compileSdk = 33
+    compileSdk = 34
 
     defaultConfig {
         applicationId = "com.example.teamfinder"
@@ -51,6 +51,14 @@ android {
 
 dependencies {
 
+    val nav_version = "2.7.0"
+
+    implementation("androidx.navigation:navigation-compose:$nav_version")
+
+
+    implementation ("com.github.JamalMulla:ComposePrefs3:1.0.4")
+    implementation ("androidx.datastore:datastore-preferences:1.0.0")
+    implementation("androidx.datastore:datastore-preferences:1.0.0")
     implementation("com.google.accompanist:accompanist-systemuicontroller:0.30.1")
     implementation("androidx.core:core-ktx:1.9.0")
     implementation("androidx.lifecycle:lifecycle-runtime-ktx:2.6.1")
