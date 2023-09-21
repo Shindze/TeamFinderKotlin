@@ -8,7 +8,7 @@ import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.surfaceColorAtElevation
 import androidx.compose.ui.unit.dp
-import com.example.teamfinder.screens.LibraryScreen
+import com.example.teamfinder.screens.Drawer
 import com.example.teamfinder.ui.theme.TeamFinderTheme
 import com.google.accompanist.systemuicontroller.rememberSystemUiController
 
@@ -30,8 +30,7 @@ class MainActivity : ComponentActivity() {
                         color = MaterialTheme.colorScheme.surfaceColorAtElevation(3.dp)
                     )
                 }
-
-                LibraryScreen()
+                Drawer()
             }
         }
     }

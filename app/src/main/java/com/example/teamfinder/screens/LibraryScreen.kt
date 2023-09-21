@@ -25,6 +25,7 @@ import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.ModalNavigationDrawer
 import androidx.compose.material3.NavigationBar
 import androidx.compose.material3.NavigationBarItem
 import androidx.compose.material3.Scaffold
@@ -34,6 +35,7 @@ import androidx.compose.material3.surfaceColorAtElevation
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
@@ -56,6 +58,8 @@ data class BottomNavItem(
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun LibraryScreen() {
+    val coroutineScope = rememberCoroutineScope()
+
     var selectedItemIndex by rememberSaveable {
         mutableStateOf(0)
     }
@@ -137,13 +141,13 @@ fun LibraryScreen() {
             }
         }) { innerPadding ->
         Box(Modifier.padding(innerPadding)) {
-            libraryScreen()
+            libraryScreenElements()
         }
     }
 }
 
 @Composable
-fun libraryScreen() {
+fun libraryScreenElements() {
     Column(
         Modifier
             .padding(horizontal = 24.dp, vertical = 8.dp)
