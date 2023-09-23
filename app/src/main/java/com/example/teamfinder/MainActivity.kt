@@ -16,7 +16,7 @@ import androidx.datastore.preferences.preferencesDataStore
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
-import com.example.teamfinder.screens.Drawer
+import com.example.teamfinder.screens.DrawerShell
 import com.example.teamfinder.screens.SettingsScreen
 import com.example.teamfinder.ui.theme.TeamFinderTheme
 import com.google.accompanist.systemuicontroller.rememberSystemUiController
@@ -41,12 +41,13 @@ class MainActivity : ComponentActivity() {
                         color = MaterialTheme.colorScheme.surfaceColorAtElevation(3.dp)
                     )
                 }
+
                 NavHost(
                     navController = navController,
                     startDestination = "start_screen"
                 ) {
                     composable("start_screen") {
-                        Drawer{
+                        DrawerShell{
                             navController.navigate("settings_screen")
                         }
                     }

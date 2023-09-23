@@ -1,6 +1,9 @@
 package com.example.teamfinder.screens
 
+import BottomSheet
+import android.annotation.SuppressLint
 import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.horizontalScroll
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -28,9 +31,10 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.NavigationBar
 import androidx.compose.material3.NavigationBarItem
 import androidx.compose.material3.Scaffold
+import androidx.compose.material3.SheetState
 import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBarDefaults
-import androidx.compose.material3.surfaceColorAtElevation
+import androidx.compose.material3.rememberModalBottomSheetState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -43,6 +47,7 @@ import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
+import com.example.teamfinder.datastore.WorkDataClass
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.launch
 
@@ -52,39 +57,69 @@ data class BottomNavItem(
     val unselectedIcon: ImageVector,
 )
 
+val works = listOf(
+    WorkDataClass(
+        workName = "Разработчик",
+        workDescription = "Требуется создатель моделей в 3д",
+        workTag = "Game"
+    ),
+    WorkDataClass(
+        workName = "Создатель",
+        workDescription = "Мы ищем того, кто будет творить!",
+        workTag = "Other"
+    ),
+    WorkDataClass(
+        workName = "Игрок",
+        workDescription = "Хочешь поиграть? Тебе к нам!",
+        workTag = "Game"
+    ),
+    WorkDataClass(
+        workName = "Водитель",
+        workDescription = "Ищем водителей категории B",
+        workTag = "Other"
+    ),
+    WorkDataClass(
+        workName = "Разработчик",
+        workDescription = "Требуется создатель моделей в 3д",
+        workTag = "Game"
+    ),
+)
+
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun LibraryScreen(scope: CoroutineScope, drawerState: DrawerState) {
 
+    val sheetState = rememberModalBottomSheetState()
+
     var selectedItemIndex by rememberSaveable {
         mutableStateOf(0)
     }
+
     val items = listOf(
         BottomNavItem(
             title = "Library",
             selectedIcon = Icons.Filled.Home,
             unselectedIcon = Icons.Outlined.Home
-        ),
-        BottomNavItem(
-            title = "Tinder",
-            selectedIcon = Icons.Filled.Face,
+        ), BottomNavItem(
+            title = "Tinder", selectedIcon = Icons.Filled.Face,
             unselectedIcon = Icons.Outlined.Face
-        ),
-        BottomNavItem(
+        ), BottomNavItem(
             title = "Favourites",
             selectedIcon = Icons.Filled.Favorite,
             unselectedIcon = Icons.Rounded.FavoriteBorder
         )
     )
 
-    Scaffold(
-        Modifier
-            .fillMaxSize(),
+    if (sheetState.isVisible) {
+        BottomSheet(sheetState, scope)
+    }
+
+    Scaffold(Modifier.fillMaxSize(),
         containerColor = MaterialTheme.colorScheme.background,
         topBar = {
             CenterAlignedTopAppBar(
                 colors = TopAppBarDefaults.centerAlignedTopAppBarColors(
-                    containerColor = MaterialTheme.colorScheme.surfaceColorAtElevation(3.dp)
+                    containerColor = MaterialTheme.colorScheme.surfaceContainer
                 ),
                 navigationIcon = {
                     IconButton(onClick = {
@@ -103,7 +138,7 @@ fun LibraryScreen(scope: CoroutineScope, drawerState: DrawerState) {
                     Text(text = "Библиотека", color = MaterialTheme.colorScheme.onSurface)
                 },
                 actions = {
-                    IconButton(onClick = { }) {
+                    IconButton(onClick = {}) {
                         Icon(
                             imageVector = Icons.Filled.AccountCircle,
                             contentDescription = "Localized description",
@@ -115,47 +150,41 @@ fun LibraryScreen(scope: CoroutineScope, drawerState: DrawerState) {
         },
         bottomBar = {
             NavigationBar(
-                containerColor = MaterialTheme.colorScheme.surfaceColorAtElevation(3.dp)
+                containerColor = MaterialTheme.colorScheme.surfaceContainer
             ) {
                 items.forEachIndexed { index, item ->
-                    NavigationBarItem(
-                        icon = {
-                            Icon(
-                                imageVector =
-                                if (index == selectedItemIndex) {
-                                    item.selectedIcon
-                                } else {
-                                    item.unselectedIcon
-                                },
-                                contentDescription = item.title
-                            )
-                        },
-                        label = {
-                            Text(item.title)
-                        },
-                        selected = selectedItemIndex == index,
-                        onClick = {
-                            selectedItemIndex = index
-                        }
-                    )
+                    NavigationBarItem(icon = {
+                        Icon(
+                            imageVector = if (index == selectedItemIndex) {
+                                item.selectedIcon
+                            } else {
+                                item.unselectedIcon
+                            }, contentDescription = item.title
+                        )
+                    }, label = {
+                        Text(item.title)
+                    }, selected = selectedItemIndex == index, onClick = {
+                        selectedItemIndex = index
+                    })
                 }
             }
         }) { innerPadding ->
         Box(Modifier.padding(innerPadding)) {
-            libraryScreenElements()
+            libraryScreenElements(sheetState, scope)
         }
     }
 }
 
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun libraryScreenElements() {
+fun libraryScreenElements(sheetState: SheetState, scope: CoroutineScope) {
     Column(
         Modifier
             .padding(horizontal = 24.dp, vertical = 8.dp)
             .fillMaxSize(),
     ) {
 
-        workCard()
+        workCard(scope, sheetState, works[1])
         Text(
             text = "Ваш выбор",
             style = MaterialTheme.typography.headlineMedium,
@@ -166,8 +195,8 @@ fun libraryScreenElements() {
                 .fillMaxWidth()
                 .horizontalScroll(rememberScrollState())
         ) {
-            repeat(4) {
-                workCard()
+            for (work in works){
+                workCard(scope, sheetState, work)
             }
         }
         Column(
@@ -197,8 +226,10 @@ fun libraryScreenElements() {
     }
 }
 
+@OptIn(ExperimentalMaterial3Api::class)
+@SuppressLint("UnrememberedMutableState")
 @Composable
-fun workCard() {
+fun workCard(scope: CoroutineScope, sheetState: SheetState, work: WorkDataClass) {
     Column(
         Modifier.padding(horizontal = 8.dp, vertical = 16.dp)
     ) {
@@ -207,6 +238,11 @@ fun workCard() {
                 .size(164.dp)
                 .clip(shape = RoundedCornerShape(28.dp))
                 .background(color = MaterialTheme.colorScheme.primaryContainer)
+                .clickable {
+                    scope.launch {
+                        sheetState.show()
+                    }
+                }
         ) {
             Column(
                 Modifier
@@ -214,25 +250,25 @@ fun workCard() {
                     .padding(16.dp),
             ) {
                 Row(
-                    Modifier
-                        .fillMaxWidth(),
+                    Modifier.fillMaxWidth(),
                     horizontalArrangement = Arrangement.SpaceBetween,
                 ) {
                     Box(
                         Modifier
                             .size(48.dp)
                             .clip(shape = RoundedCornerShape(16.dp))
-                            .background(MaterialTheme.colorScheme.primary),
+                            .background(MaterialTheme.colorScheme.secondary),
                         contentAlignment = Alignment.Center
                     ) {
                         Icon(
                             imageVector = Icons.Filled.Build,
                             contentDescription = "Game",
-                            tint = MaterialTheme.colorScheme.onPrimary
+                            tint = MaterialTheme.colorScheme.onSecondary
                         )
                     }
                     Text(
-                        text = "3.4 км", style = MaterialTheme.typography.bodyMedium,
+                        text = "3.4 км",
+                        style = MaterialTheme.typography.bodyMedium,
                         color = MaterialTheme.colorScheme.onPrimaryContainer
                     )
                 }
@@ -241,7 +277,9 @@ fun workCard() {
                     Modifier.fillMaxSize(),
                 ) {
                     Text(
-                        text = "Разрабочтик",
+                        maxLines = 2,
+                        overflow = TextOverflow.Ellipsis,
+                        text = work.workName,
                         style = MaterialTheme.typography.titleMedium,
                         color = MaterialTheme.colorScheme.onPrimaryContainer
                     )
@@ -249,7 +287,7 @@ fun workCard() {
                     Text(
                         maxLines = 3,
                         overflow = TextOverflow.Ellipsis,
-                        text = "Ищем левел-дизайнера для нашего лучшего проекта",
+                        text = work.workDescription,
                         style = MaterialTheme.typography.bodySmall,
                         color = MaterialTheme.colorScheme.onPrimaryContainer
                     )

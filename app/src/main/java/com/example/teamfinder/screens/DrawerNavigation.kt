@@ -1,12 +1,12 @@
 package com.example.teamfinder.screens
 
+import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Home
 import androidx.compose.material.icons.filled.Notifications
 import androidx.compose.material.icons.filled.Settings
 import androidx.compose.material3.DrawerValue
-import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.ModalDrawerSheet
@@ -23,29 +23,28 @@ import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.unit.dp
 import kotlinx.coroutines.launch
 
-@OptIn(ExperimentalMaterial3Api::class)
+data class DrawerItem(
+    val imageVector: ImageVector,
+    val title: String
+)
+
 @Composable
-fun Drawer(
-    navigation: () -> Unit) {
+fun DrawerShell(navigation: () -> Unit) {
 
     val items = listOf(
-
         DrawerItem(
             imageVector = Icons.Filled.Home,
             title = "Библиотека"
         ),
-
         DrawerItem(
             imageVector = Icons.Filled.Notifications,
             title = "Уведомления"
         ),
-
         DrawerItem(
             imageVector = Icons.Filled.Settings,
             title = "Настройки"
         ),
-
-        )
+    )
 
     val drawerState = rememberDrawerState(initialValue = DrawerValue.Closed)
     val scope = rememberCoroutineScope()
@@ -81,13 +80,9 @@ fun Drawer(
                 }
             }
         },
+        modifier = Modifier.fillMaxSize(),
         content = {
             LibraryScreen(scope, drawerState)
         },
     )
 }
-
-data class DrawerItem(
-    val imageVector: ImageVector,
-    val title: String
-)
