@@ -35,7 +35,6 @@ val itemsList = (0..5).toList()
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun BottomSheet(sheetState: SheetState, scope: CoroutineScope) {
-
     ModalBottomSheet(
         sheetState = sheetState,
         onDismissRequest = {

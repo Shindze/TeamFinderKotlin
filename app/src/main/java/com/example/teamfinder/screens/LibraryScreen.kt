@@ -1,6 +1,5 @@
 package com.example.teamfinder.screens
 
-import BottomSheet
 import android.annotation.SuppressLint
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
@@ -19,27 +18,13 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.*
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.*
-import androidx.compose.material.icons.outlined.Face
-import androidx.compose.material.icons.outlined.Home
-import androidx.compose.material.icons.rounded.FavoriteBorder
-import androidx.compose.material3.CenterAlignedTopAppBar
 import androidx.compose.material3.DrawerState
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
-import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.NavigationBar
-import androidx.compose.material3.NavigationBarItem
-import androidx.compose.material3.Scaffold
 import androidx.compose.material3.SheetState
 import androidx.compose.material3.Text
-import androidx.compose.material3.TopAppBarDefaults
-import androidx.compose.material3.rememberModalBottomSheetState
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.saveable.rememberSaveable
-import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -87,92 +72,8 @@ val works = listOf(
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun LibraryScreen(scope: CoroutineScope, drawerState: DrawerState) {
-
-    val sheetState = rememberModalBottomSheetState()
-
-    var selectedItemIndex by rememberSaveable {
-        mutableStateOf(0)
-    }
-
-    val items = listOf(
-        BottomNavItem(
-            title = "Library",
-            selectedIcon = Icons.Filled.Home,
-            unselectedIcon = Icons.Outlined.Home
-        ), BottomNavItem(
-            title = "Tinder", selectedIcon = Icons.Filled.Face,
-            unselectedIcon = Icons.Outlined.Face
-        ), BottomNavItem(
-            title = "Favourites",
-            selectedIcon = Icons.Filled.Favorite,
-            unselectedIcon = Icons.Rounded.FavoriteBorder
-        )
-    )
-
-    if (sheetState.isVisible) {
-        BottomSheet(sheetState, scope)
-    }
-
-    Scaffold(Modifier.fillMaxSize(),
-        containerColor = MaterialTheme.colorScheme.background,
-        topBar = {
-            CenterAlignedTopAppBar(
-                colors = TopAppBarDefaults.centerAlignedTopAppBarColors(
-                    containerColor = MaterialTheme.colorScheme.surfaceContainer
-                ),
-                navigationIcon = {
-                    IconButton(onClick = {
-                        scope.launch {
-                            drawerState.open()
-                        }
-                    }) {
-                        Icon(
-                            imageVector = Icons.Filled.Menu,
-                            contentDescription = "Menu",
-                            tint = MaterialTheme.colorScheme.onSurface
-                        )
-                    }
-                },
-                title = {
-                    Text(text = "Библиотека", color = MaterialTheme.colorScheme.onSurface)
-                },
-                actions = {
-                    IconButton(onClick = {}) {
-                        Icon(
-                            imageVector = Icons.Filled.AccountCircle,
-                            contentDescription = "Localized description",
-                            tint = MaterialTheme.colorScheme.onSurface
-                        )
-                    }
-                },
-            )
-        },
-        bottomBar = {
-            NavigationBar(
-                containerColor = MaterialTheme.colorScheme.surfaceContainer
-            ) {
-                items.forEachIndexed { index, item ->
-                    NavigationBarItem(icon = {
-                        Icon(
-                            imageVector = if (index == selectedItemIndex) {
-                                item.selectedIcon
-                            } else {
-                                item.unselectedIcon
-                            }, contentDescription = item.title
-                        )
-                    }, label = {
-                        Text(item.title)
-                    }, selected = selectedItemIndex == index, onClick = {
-                        selectedItemIndex = index
-                    })
-                }
-            }
-        }) { innerPadding ->
-        Box(Modifier.padding(innerPadding)) {
-            libraryScreenElements(sheetState, scope)
-        }
-    }
+fun LibraryScreen(scope: CoroutineScope, drawerState: DrawerState, sheetState: SheetState) {
+    libraryScreenElements(sheetState, scope)
 }
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -195,7 +96,7 @@ fun libraryScreenElements(sheetState: SheetState, scope: CoroutineScope) {
                 .fillMaxWidth()
                 .horizontalScroll(rememberScrollState())
         ) {
-            for (work in works){
+            for (work in works) {
                 workCard(scope, sheetState, work)
             }
         }

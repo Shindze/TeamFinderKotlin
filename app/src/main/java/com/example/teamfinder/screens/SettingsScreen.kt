@@ -5,40 +5,36 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ArrowBack
 import androidx.compose.material.icons.filled.Info
+import androidx.compose.material3.CenterAlignedTopAppBar
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
-import androidx.compose.material3.TopAppBar
 import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.material3.surfaceColorAtElevation
 import androidx.compose.runtime.Composable
-import androidx.compose.ui.ExperimentalComposeUiApi
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
-import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
-import androidx.compose.ui.unit.sp
+import androidx.navigation.NavHostController
 import com.example.teamfinder.dataStore
 import com.jamal.composeprefs3.ui.PrefsScreen
 import com.jamal.composeprefs3.ui.prefs.CheckBoxPref
 import com.jamal.composeprefs3.ui.prefs.SwitchPref
 
-@OptIn(ExperimentalComposeUiApi::class, ExperimentalMaterial3Api::class)
+@OptIn(ExperimentalMaterial3Api::class)
 @SuppressLint("UnusedMaterial3ScaffoldPaddingParameter")
 @Composable
-fun SettingsScreen(goBackFun: () -> Unit) {
-
-
+fun SettingsScreen(goBackFun: NavHostController) {
     Scaffold(topBar = {
-        TopAppBar(
+        CenterAlignedTopAppBar(
             colors = TopAppBarDefaults.centerAlignedTopAppBarColors(
                 containerColor = MaterialTheme.colorScheme.surfaceColorAtElevation(3.dp)
             ),
             navigationIcon = {
-                IconButton(onClick = { goBackFun() }) {
+                IconButton(onClick = { goBackFun.navigate("start_screen") }) {
                     Icon(
                         imageVector = Icons.Filled.ArrowBack,
                         contentDescription = "Back"
@@ -47,9 +43,7 @@ fun SettingsScreen(goBackFun: () -> Unit) {
             },
             title = {
                 Text(
-                    text = "Settings",
-                    fontSize = 18.sp,
-                    fontWeight = FontWeight.SemiBold
+                    text = "Настройки", style = MaterialTheme.typography.titleLarge
                 )
             }
         )
@@ -93,10 +87,4 @@ fun SettingsScreen(goBackFun: () -> Unit) {
             }
         }
     }
-}
-
-@OptIn(ExperimentalMaterial3Api::class)
-@Composable
-fun SettingsTopBar() {
-
 }

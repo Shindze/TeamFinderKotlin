@@ -47,14 +47,10 @@ class MainActivity : ComponentActivity() {
                     startDestination = "start_screen"
                 ) {
                     composable("start_screen") {
-                        DrawerShell{
-                            navController.navigate("settings_screen")
-                        }
+                        DrawerShell(navController)
                     }
                     composable("settings_screen") {
-                        SettingsScreen{
-                            navController.navigate("start_screen")
-                        }
+                        SettingsScreen(navController)
                     }
                 }
             }
