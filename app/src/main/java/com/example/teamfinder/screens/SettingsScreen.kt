@@ -3,7 +3,7 @@ package com.example.teamfinder.screens
 import android.annotation.SuppressLint
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.ArrowBack
+import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.material.icons.filled.Info
 import androidx.compose.material3.CenterAlignedTopAppBar
 import androidx.compose.material3.ExperimentalMaterial3Api
@@ -13,11 +13,9 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBarDefaults
-import androidx.compose.material3.surfaceColorAtElevation
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
-import androidx.compose.ui.unit.dp
 import androidx.navigation.NavHostController
 import com.example.teamfinder.dataStore
 import com.jamal.composeprefs3.ui.PrefsScreen
@@ -31,12 +29,12 @@ fun SettingsScreen(goBackFun: NavHostController) {
     Scaffold(topBar = {
         CenterAlignedTopAppBar(
             colors = TopAppBarDefaults.centerAlignedTopAppBarColors(
-                containerColor = MaterialTheme.colorScheme.surfaceColorAtElevation(3.dp)
+                containerColor = MaterialTheme.colorScheme.surfaceContainer
             ),
             navigationIcon = {
-                IconButton(onClick = { goBackFun.navigate("start_screen") }) {
+                IconButton(onClick = { goBackFun.popBackStack() }) {
                     Icon(
-                        imageVector = Icons.Filled.ArrowBack,
+                        imageVector = Icons.AutoMirrored.Filled.ArrowBack,
                         contentDescription = "Back"
                     )
                 }
@@ -49,7 +47,6 @@ fun SettingsScreen(goBackFun: NavHostController) {
         )
     }) { innerPadding ->
         PrefsScreen(dataStore = LocalContext.current.dataStore, Modifier.padding(innerPadding)) {
-
             prefsGroup("Настройки переключателей") {
                 prefsItem {
                     SwitchPref(

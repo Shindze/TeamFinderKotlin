@@ -1,21 +1,20 @@
-package com.example.teamfinder.screens
+package com.example.teamfinder
 
-import BottomSheet
 import android.annotation.SuppressLint
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.AccountCircle
+import androidx.compose.material.icons.filled.Email
 import androidx.compose.material.icons.filled.Face
-import androidx.compose.material.icons.filled.Favorite
 import androidx.compose.material.icons.filled.Home
 import androidx.compose.material.icons.filled.Menu
 import androidx.compose.material.icons.filled.Notifications
 import androidx.compose.material.icons.filled.Settings
+import androidx.compose.material.icons.outlined.Email
 import androidx.compose.material.icons.outlined.Face
 import androidx.compose.material.icons.outlined.Home
-import androidx.compose.material.icons.rounded.FavoriteBorder
 import androidx.compose.material3.CenterAlignedTopAppBar
 import androidx.compose.material3.DrawerValue
 import androidx.compose.material3.ExperimentalMaterial3Api
@@ -43,6 +42,10 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavHostController
+import com.example.teamfinder.screens.BottomNavItem
+import com.example.teamfinder.screens.ChatsScreen
+import com.example.teamfinder.screens.LibraryScreen
+import com.example.teamfinder.screens.TinderLikeScreen
 import kotlinx.coroutines.launch
 
 data class DrawerItem(
@@ -55,10 +58,10 @@ data class DrawerItem(
 @Composable
 fun DrawerShell(navigation: NavHostController) {
 
-    val items = listOf(
+    val drawerItems = listOf(
         DrawerItem(
             imageVector = Icons.Filled.Home,
-            title = "Библиотека"
+            title = "Главная"
         ),
         DrawerItem(
             imageVector = Icons.Filled.Notifications,
@@ -69,34 +72,28 @@ fun DrawerShell(navigation: NavHostController) {
             title = "Настройки"
         ),
     )
-
     val drawerState = rememberDrawerState(initialValue = DrawerValue.Closed)
+
     val scope = rememberCoroutineScope()
+    val selectedDrawerItem = remember { mutableStateOf(drawerItems[0]) }
 
-    val selectedItem = remember {
-        mutableStateOf(items[0])
-    }
-
-    var selectedBottomItem by rememberSaveable {
-        mutableStateOf(0)
-    }
+    var selectedBottomItem by rememberSaveable { mutableStateOf(0) }
     val bottomItems = listOf(
         BottomNavItem(
-            title = "Library",
+            title = "Библиотека",
             selectedIcon = Icons.Filled.Home,
             unselectedIcon = Icons.Outlined.Home
         ), BottomNavItem(
-            title = "Tinder", selectedIcon = Icons.Filled.Face,
+            title = "Подборка", selectedIcon = Icons.Filled.Face,
             unselectedIcon = Icons.Outlined.Face
         ), BottomNavItem(
-            title = "Favourites",
-            selectedIcon = Icons.Filled.Favorite,
-            unselectedIcon = Icons.Rounded.FavoriteBorder
+            title = "Чаты",
+            selectedIcon = Icons.Filled.Email,
+            unselectedIcon = Icons.Outlined.Email
         )
     )
 
     val sheetState = rememberModalBottomSheetState()
-
     if (sheetState.isVisible) {
         BottomSheet(sheetState, scope)
     }
@@ -110,16 +107,17 @@ fun DrawerShell(navigation: NavHostController) {
                     modifier = Modifier.padding(16.dp),
                     style = MaterialTheme.typography.titleLarge,
                 )
-                items.forEach { item ->
+                drawerItems.forEach { item ->
                     NavigationDrawerItem(
                         label = { Text(text = item.title) },
-                        selected = selectedItem.value == item,
+                        selected = selectedDrawerItem.value == item,
                         onClick = {
                             scope.launch {
-                                selectedItem.value = item
-                                if (selectedItem.value.title == "Настройки") navigation.navigate(
+                                selectedDrawerItem.value = item
+                                if (selectedDrawerItem.value.title == "Настройки") navigation.navigate(
                                     "settings_screen"
                                 )
+                                if (selectedDrawerItem.value.title == "Главная") drawerState.close()
                             }
                         },
                         Modifier.padding(horizontal = 16.dp, vertical = 8.dp),
@@ -134,73 +132,76 @@ fun DrawerShell(navigation: NavHostController) {
             }
         },
         modifier = Modifier.fillMaxSize(),
-        content = {
-            Scaffold(
-                Modifier
-                    .fillMaxSize(),
-                containerColor = MaterialTheme.colorScheme.background,
-                topBar = {
-                    CenterAlignedTopAppBar(
-                        colors = TopAppBarDefaults.centerAlignedTopAppBarColors(
-                            containerColor = MaterialTheme.colorScheme.surfaceContainer
-                        ),
-                        navigationIcon = {
-                            IconButton(onClick = {
-                                scope.launch {
-                                    drawerState.open()
-                                }
-                            }) {
-                                Icon(
-                                    imageVector = Icons.Filled.Menu,
-                                    contentDescription = "Menu",
-                                    tint = MaterialTheme.colorScheme.onSurface
-                                )
-                            }
-                        },
-                        title = {
-                            Text(
-                                text = "Библиотека",
-                                color = MaterialTheme.colorScheme.onSurface
-                            )
-                        },
-                        actions = {
-                            IconButton(onClick = {}) {
-                                Icon(
-                                    imageVector = Icons.Filled.AccountCircle,
-                                    contentDescription = "Localized description",
-                                    tint = MaterialTheme.colorScheme.onSurface
-                                )
-                            }
-                        },
-                    )
-                },
-                bottomBar = {
-                    NavigationBar(
+    ) {
+        Scaffold(
+            Modifier
+                .fillMaxSize(),
+            containerColor = MaterialTheme.colorScheme.background,
+            topBar = {
+                CenterAlignedTopAppBar(
+                    colors = TopAppBarDefaults.centerAlignedTopAppBarColors(
                         containerColor = MaterialTheme.colorScheme.surfaceContainer
-                    ) {
-                        bottomItems.forEachIndexed { index, item ->
-                            NavigationBarItem(icon = {
-                                Icon(
-                                    imageVector = if (index == selectedBottomItem) {
-                                        item.selectedIcon
-                                    } else {
-                                        item.unselectedIcon
-                                    }, contentDescription = item.title
-                                )
-                            }, label = {
-                                Text(item.title)
-                            }, selected = selectedBottomItem == index, onClick = {
-                                selectedBottomItem = index
-                            })
+                    ),
+                    navigationIcon = {
+                        IconButton(onClick = {
+                            scope.launch {
+                                drawerState.open()
+                            }
+                        }) {
+                            Icon(
+                                imageVector = Icons.Filled.Menu,
+                                contentDescription = "Menu",
+                                tint = MaterialTheme.colorScheme.onSurface
+                            )
                         }
+                    },
+                    title = {
+                        Text(
+                            text = bottomItems[selectedBottomItem].title,
+                            color = MaterialTheme.colorScheme.onSurface
+                        )
+                    },
+                    actions = {
+                        IconButton(onClick = {}) {
+                            Icon(
+                                imageVector = Icons.Filled.AccountCircle,
+                                contentDescription = "Localized description",
+                                tint = MaterialTheme.colorScheme.onSurface
+                            )
+                        }
+                    },
+                )
+            },
+            bottomBar = {
+                NavigationBar(
+                    containerColor = MaterialTheme.colorScheme.surfaceContainer
+                ) {
+                    bottomItems.forEachIndexed { index, item ->
+                        NavigationBarItem(icon = {
+                            Icon(
+                                imageVector = if (index == selectedBottomItem) {
+                                    item.selectedIcon
+                                } else {
+                                    item.unselectedIcon
+                                }, contentDescription = item.title
+                            )
+                        }, label = {
+                            Text(item.title)
+                        }, selected = selectedBottomItem == index, onClick = {
+                            selectedBottomItem = index
+                        })
                     }
                 }
-            ) { innerPadding ->
-                Box(Modifier.padding(innerPadding)) {
-                    LibraryScreen(scope, drawerState, sheetState)
+            }
+        ) { innerPadding ->
+            Box(Modifier.padding(innerPadding)) {
+                when (selectedBottomItem) {
+                    0 -> LibraryScreen(scope, drawerState, sheetState)
+                    1 -> TinderLikeScreen()
+                    2 -> ChatsScreen()
                 }
             }
-        },
-    )
+        }
+    }
 }
 
