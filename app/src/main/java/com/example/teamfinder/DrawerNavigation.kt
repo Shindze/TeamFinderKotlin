@@ -174,22 +174,22 @@ fun DrawerShell(navigation: NavHostController) {
             },
             bottomBar = {
                 NavigationBar(
-                    containerColor = MaterialTheme.colorScheme.surfaceContainer
+                    containerColor = MaterialTheme.colorScheme.surfaceContainer,
                 ) {
                     bottomItems.forEachIndexed { index, item ->
-                        NavigationBarItem(icon = {
-                            Icon(
-                                imageVector = if (index == selectedBottomItem) {
-                                    item.selectedIcon
-                                } else {
-                                    item.unselectedIcon
-                                }, contentDescription = item.title
-                            )
-                        }, label = {
-                            Text(item.title)
-                        }, selected = selectedBottomItem == index, onClick = {
-                            selectedBottomItem = index
-                        })
+                        NavigationBarItem(
+                            icon = {
+                                Icon(
+                                    imageVector = if (index == selectedBottomItem) {
+                                        item.selectedIcon
+                                    } else {
+                                        item.unselectedIcon
+                                    }, contentDescription = item.title
+                                )
+                            },
+                            label = { Text(item.title) },
+                            selected = selectedBottomItem == index,
+                            onClick = { selectedBottomItem = index })
                     }
                 }
             }
