@@ -33,6 +33,7 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import com.example.teamfinder.datastore.WorkDataClass
+import com.example.teamfinder.datastore.works
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.launch
 
@@ -40,34 +41,6 @@ data class BottomNavItem(
     val title: String,
     val selectedIcon: ImageVector,
     val unselectedIcon: ImageVector,
-)
-
-val works = listOf(
-    WorkDataClass(
-        workName = "Разработчик",
-        workDescription = "Требуется создатель моделей в 3д",
-        workTag = "Game"
-    ),
-    WorkDataClass(
-        workName = "Создатель",
-        workDescription = "Мы ищем того, кто будет творить!",
-        workTag = "Other"
-    ),
-    WorkDataClass(
-        workName = "Игрок",
-        workDescription = "Хочешь поиграть? Тебе к нам!",
-        workTag = "Game"
-    ),
-    WorkDataClass(
-        workName = "Водитель",
-        workDescription = "Ищем водителей категории B",
-        workTag = "Other"
-    ),
-    WorkDataClass(
-        workName = "Разработчик",
-        workDescription = "Требуется создатель моделей в 3д",
-        workTag = "Game"
-    ),
 )
 
 @OptIn(ExperimentalMaterial3Api::class)

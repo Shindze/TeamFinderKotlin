@@ -14,6 +14,7 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import com.example.teamfinder.screens.SettingsScreen
+import com.example.teamfinder.screens.chatScreen
 import com.example.teamfinder.ui.theme.TeamFinderTheme
 import com.google.accompanist.systemuicontroller.rememberSystemUiController
 
@@ -24,27 +25,31 @@ class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContent {
-            val navController = rememberNavController()
-
             TeamFinderTheme {
                 val systemUiController = rememberSystemUiController()
-
                 systemUiController.setSystemBarsColor(
                     color = MaterialTheme.colorScheme.surfaceContainer
                 )
 
+                val navController = rememberNavController()
                 NavHost(
-                    navController = navController,
-                    startDestination = "start_screen"
+                    navController = navController, startDestination = "start_screen"
                 ) {
-                    composable("start_screen") {
+                    composable(START_SCREEN) {
                         DrawerShell(navController)
                     }
-                    composable("settings_screen") {
+                    composable(SETTINGS_SCREEN) {
                         SettingsScreen(navController)
+                    }
+                    composable(CHAT_SCREEN) {
+                        chatScreen(navController)
                     }
                 }
             }
         }
     }
 }
+
+const val START_SCREEN = "start_screen"
+const val SETTINGS_SCREEN = "settings_screen"
+const val CHAT_SCREEN = "chat_screen"

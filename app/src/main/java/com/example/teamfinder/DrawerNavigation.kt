@@ -198,7 +198,7 @@ fun DrawerShell(navigation: NavHostController) {
                 when (selectedBottomItem) {
                     0 -> LibraryScreen(scope, drawerState, sheetState)
                     1 -> TinderLikeScreen()
-                    2 -> ChatsScreen()
+                    2 -> ChatsScreen(navigation)
                 }
             }
         }
